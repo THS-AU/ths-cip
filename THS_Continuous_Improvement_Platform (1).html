@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THS Continuous Improvement Platform</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ths-orange:#da532c;--ths-orange-dark:#b8421f;--ths-orange-light:#f5e8e3;
+  --ths-black:#1a1a1a;--ths-charcoal:#2d2d2d;--ths-mid:#555;--ths-steel:#888;
+  --ths-light:#f4f4f2;--ths-border:#e2e0db;--ths-white:#fff;
+  --ths-red:#7F1D1D;--ths-red-light:#FEE2E2;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--ths-light);min-height:100vh;color:var(--ths-black)}
+.header{background:var(--ths-black);padding:0 1.5rem;position:sticky;top:0;z-index:50}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:62px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-logo{height:30px;width:auto;display:block;filter:brightness(0) invert(1)}
+.brand-divider{width:1px;height:28px;background:rgba(255,255,255,.2)}
+.brand-sub{color:rgba(255,255,255,.7);font-size:12px;letter-spacing:.04em;line-height:1.3;white-space:nowrap}
+.brand-sub strong{color:var(--ths-orange);display:block;font-size:10px;font-weight:400;margin-top:2px;letter-spacing:.06em}
+.site-pills{display:flex;gap:6px}
+.site-pill{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6)}
+.app{max-width:900px;margin:0 auto;padding:1.25rem 1rem 3rem}
+.nav{display:flex;gap:0;margin-bottom:1.5rem;background:var(--ths-white);border:0.5px solid var(--ths-border);border-radius:10px;padding:5px}
+.nav-btn{flex:1;padding:9px 8px;border:none;background:transparent;border-radius:7px;font-size:13px;font-weight:400;color:var(--ths-mid);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit}
+.nav-btn.active{background:var(--ths-orange);color:#fff;font-weight:500}
+.nav-btn i{font-size:15px}
+.nav-badge{background:var(--ths-red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;min-width:18px;text-align:center}
+.section{display:none}.section.active{display:block}
+.card{background:var(--ths-white);border:0.5px solid var(--ths-border);border-radius:10px;padding:1.25rem;margin-bottom:1rem}
+.card-title{font-size:15px;font-weight:500;color:var(--ths-black);margin-bottom:1rem;display:flex;align-items:center;gap:8px;padding-bottom:.875rem;border-bottom:0.5px solid var(--ths-border)}
+.card-title i{font-size:18px;color:var(--ths-orange)}
+label{display:block;font-size:12px;color:var(--ths-steel);margin-bottom:5px;margin-top:14px;text-transform:uppercase;letter-spacing:.04em;font-weight:500}
+label:first-of-type{margin-top:0}
+input[type=text],input[type=password],select,textarea{width:100%;font-size:14px;padding:9px 12px;border:0.5px solid var(--ths-border);border-radius:7px;background:var(--ths-white);color:var(--ths-black);font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ths-orange);outline-offset:1px;border-color:transparent}
+textarea{resize:vertical;min-height:88px;line-height:1.55}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+.upload-zone{margin-top:6px;border:1.5px dashed var(--ths-border);border-radius:8px;padding:1.25rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--ths-light);position:relative}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--ths-orange);background:var(--ths-orange-light)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone i{font-size:28px;color:var(--ths-orange);display:block;margin-bottom:.5rem;opacity:.7}
+.upload-zone p{font-size:13px;color:var(--ths-mid);line-height:1.5}
+.upload-zone span{font-size:11px;color:var(--ths-steel)}
+.attachments-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.attachment-thumb{position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;border:0.5px solid var(--ths-border);flex-shrink:0;background:var(--ths-light)}
+.attachment-thumb img{width:100%;height:100%;object-fit:cover}
+.attachment-thumb .file-icon{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.attachment-thumb .file-icon i{font-size:22px;color:var(--ths-orange)}
+.attachment-thumb .file-icon span{font-size:9px;color:var(--ths-mid);text-align:center;padding:0 4px;line-height:1.2;word-break:break-all}
+.attachment-thumb .remove-btn{position:absolute;top:3px;right:3px;width:18px;height:18px;background:rgba(0,0,0,.6);border:none;border-radius:50%;color:#fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.attachment-thumb .remove-btn:hover{background:var(--ths-orange)}
+.modal-attachments{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.modal-thumb{width:90px;height:90px;border-radius:8px;overflow:hidden;border:0.5px solid var(--ths-border);cursor:pointer;background:var(--ths-light);flex-shrink:0;transition:border-color .15s}
+.modal-thumb:hover{border-color:var(--ths-orange)}
+.modal-thumb img{width:100%;height:100%;object-fit:cover}
+.modal-thumb .file-icon{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.modal-thumb .file-icon i{font-size:24px;color:var(--ths-orange)}
+.modal-thumb .file-icon span{font-size:10px;color:var(--ths-mid);text-align:center;padding:0 6px;word-break:break-all;line-height:1.2}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem}
+.lightbox img{max-width:100%;max-height:90vh;border-radius:8px;object-fit:contain}
+.lightbox-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lightbox-close:hover{background:var(--ths-orange)}
+.anon-toggle{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;background:var(--ths-light);border-radius:8px;border:0.5px solid var(--ths-border)}
+.toggle-wrap{position:relative;width:38px;height:22px;cursor:pointer;flex-shrink:0}
+.toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+.slider-track{position:absolute;inset:0;background:#ccc;border-radius:11px;transition:.2s}
+.toggle-wrap input:checked+.slider-track{background:var(--ths-orange)}
+.slider-thumb{position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-wrap input:checked~.slider-thumb{left:19px}
+.anon-label{font-size:13px;color:var(--ths-black)}
+.anon-label span{color:var(--ths-steel);font-size:12px;display:block;margin-top:2px}
+.submit-btn{width:100%;margin-top:1.25rem;padding:12px;background:var(--ths-orange);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}
+.submit-btn:hover{background:var(--ths-orange-dark)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-bottom:1.25rem}
+.stat-card{background:var(--ths-white);border:0.5px solid var(--ths-border);border-radius:10px;padding:1rem;text-align:center}
+.stat-num{font-size:26px;font-weight:500;color:var(--ths-black)}
+.stat-label{font-size:11px;color:var(--ths-steel);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+.stat-accent{color:var(--ths-orange)}
+.stat-red{color:var(--ths-red)}
+.filters{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.filter-btn{padding:6px 12px;border:0.5px solid var(--ths-border);border-radius:20px;background:var(--ths-white);font-size:12px;color:var(--ths-mid);cursor:pointer;font-family:inherit;transition:all .15s}
+.filter-btn.active{background:var(--ths-black);color:#fff;border-color:var(--ths-black)}
+.filter-btn.red-filter.active{background:var(--ths-red);border-color:var(--ths-red)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge-pending{background:#FEF3C7;color:#78350F}
+.badge-review{background:#DBEAFE;color:#1E3A8A}
+.badge-approved{background:#D1FAE5;color:#064E3B}
+.badge-actioned{background:var(--ths-orange-light);color:var(--ths-orange-dark)}
+.badge-declined{background:#FEE2E2;color:#7F1D1D}
+.badge-nsw{background:#FCE7F3;color:#831843}
+.badge-qld{background:#EDE9FE;color:#3730A3}
+.badge-vic{background:#D1FAE5;color:#064E3B}
+.badge-cat{background:var(--ths-light);color:var(--ths-mid);border:0.5px solid var(--ths-border)}
+.badge-overdue{background:#FEE2E2;color:#7F1D1D}
+.badge-due-soon{background:#FEF3C7;color:#78350F}
+.badge-on-track{background:#D1FAE5;color:#064E3B}
+.submission-card{background:var(--ths-white);border:0.5px solid var(--ths-border);border-radius:10px;padding:1.125rem 1.25rem;margin-bottom:.625rem;cursor:pointer;transition:all .15s}
+.submission-card:hover{border-color:var(--ths-orange);box-shadow:0 0 0 2px var(--ths-orange-light)}
+.submission-card.overdue{border-left:3px solid #7F1D1D}
+.submission-card.due-soon{border-left:3px solid #D97706}
+.sub-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:.5rem}
+.sub-title{font-size:14px;font-weight:500;color:var(--ths-black)}
+.sub-meta{font-size:12px;color:var(--ths-steel);margin-top:5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.sub-preview{font-size:13px;color:var(--ths-mid);line-height:1.55;margin-top:.5rem}
+.has-solution{font-size:12px;color:var(--ths-orange);display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-weight:500}
+.priority-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.empty{text-align:center;padding:3rem 1rem;color:var(--ths-steel)}
+.empty i{font-size:38px;display:block;margin-bottom:.75rem;opacity:.3;color:var(--ths-orange)}
+.empty p{font-size:14px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal{background:var(--ths-white);border-radius:12px;border:0.5px solid var(--ths-border);padding:1.5rem;max-width:580px;width:100%;max-height:88vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;gap:10px}
+.modal-title{font-size:16px;font-weight:500;color:var(--ths-black);line-height:1.3}
+.close-btn{background:none;border:0.5px solid var(--ths-border);color:var(--ths-mid);cursor:pointer;padding:5px 7px;border-radius:6px;font-size:16px;line-height:1;flex-shrink:0}
+.close-btn:hover{background:var(--ths-light)}
+.detail-block{margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--ths-border)}
+.detail-label{font-size:11px;color:var(--ths-steel);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:500}
+.detail-text{font-size:14px;color:var(--ths-black);line-height:1.6}
+.solution-block{margin-top:1rem;padding:1rem 1.125rem;background:var(--ths-orange-light);border-radius:0 8px 8px 0;border-left:3px solid var(--ths-orange)}
+.solution-block .detail-label{color:var(--ths-orange-dark)}
+.solution-block .detail-text{color:var(--ths-charcoal)}
+.action-row{display:flex;gap:8px;margin-top:.625rem;flex-wrap:wrap}
+.action-btn{flex:1;min-width:90px;padding:9px 10px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;border:0.5px solid var(--ths-border);background:var(--ths-light);color:var(--ths-black);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.action-btn:hover{border-color:var(--ths-steel)}
+.action-btn.orange{background:var(--ths-orange);color:#fff;border-color:var(--ths-orange)}.action-btn.orange:hover{background:var(--ths-orange-dark)}
+.action-btn.navy{background:#1e3a8a;color:#fff;border-color:#1e3a8a}.action-btn.navy:hover{background:#172d6e}
+.action-btn.green{background:#064E3B;color:#fff;border-color:#064E3B}.action-btn.green:hover{background:#043d2e}
+.action-btn.red{background:#7F1D1D;color:#fff;border-color:#7F1D1D}.action-btn.red:hover{background:#6b1818}
+.timeline-section{margin-top:1rem;padding:1rem;background:var(--ths-light);border-radius:8px;border:0.5px solid var(--ths-border)}
+.timeline-label{font-size:11px;color:var(--ths-steel);text-transform:uppercase;letter-spacing:.05em;font-weight:500;margin-bottom:.5rem;display:flex;align-items:center;gap:6px}
+.timeline-label i{font-size:14px;color:var(--ths-orange)}
+.timeline-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.timeline-row select{flex:1;min-width:160px;margin-top:0}
+.due-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500}
+.due-overdue{background:#FEE2E2;color:#7F1D1D;border:0.5px solid #F09595}
+.due-soon{background:#FEF3C7;color:#78350F;border:0.5px solid #FCD34D}
+.due-ok{background:#D1FAE5;color:#064E3B;border:0.5px solid #6EE7B7}
+.due-none{background:var(--ths-light);color:var(--ths-steel);border:0.5px solid var(--ths-border)}
+.alert-banner{background:#FEE2E2;border:0.5px solid #F09595;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:10px}
+.alert-banner i{font-size:20px;color:#7F1D1D;flex-shrink:0;margin-top:1px}
+.alert-banner-content{flex:1}
+.alert-banner-title{font-size:14px;font-weight:500;color:#7F1D1D;margin-bottom:4px}
+.alert-banner-text{font-size:13px;color:#991B1B;line-height:1.5}
+.alert-banner-copy{margin-top:.625rem;padding:7px 12px;background:#7F1D1D;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.alert-banner-copy:hover{background:#6b1818}
+.admin-lock{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1.5rem;text-align:center}
+.lock-icon-wrap{width:64px;height:64px;background:var(--ths-orange-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem}
+.lock-icon-wrap i{font-size:28px;color:var(--ths-orange)}
+.admin-lock h3{font-size:17px;font-weight:500;color:var(--ths-black);margin-bottom:.5rem}
+.admin-lock p{font-size:13px;color:var(--ths-mid);margin-bottom:1.5rem;line-height:1.5;max-width:320px}
+.pin-row{display:flex;gap:8px;justify-content:center;align-items:center;max-width:260px;margin:0 auto}
+.pin-row input{text-align:center;font-size:20px;letter-spacing:.2em;flex:1;border:0.5px solid var(--ths-border);border-radius:8px;padding:9px 12px}
+.pin-row button{padding:10px 18px;background:var(--ths-orange);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500}
+.pin-row button:hover{background:var(--ths-orange-dark)}
+.pin-hint{margin-top:.75rem;font-size:12px;color:var(--ths-steel)}
+.notification-info{background:var(--ths-white);border:0.5px solid var(--ths-border);border-radius:10px;padding:1.25rem;margin-top:1rem}
+.notif-title{font-size:14px;font-weight:500;color:var(--ths-black);margin-bottom:.875rem;display:flex;align-items:center;gap:8px}
+.notif-title i{color:var(--ths-orange);font-size:17px}
+.notif-row{display:flex;gap:10px;align-items:flex-start;padding:.625rem 0;border-bottom:0.5px solid var(--ths-border)}
+.notif-row:last-child{border-bottom:none;padding-bottom:0}
+.notif-icon{width:32px;height:32px;border-radius:7px;background:var(--ths-orange-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-icon i{font-size:16px;color:var(--ths-orange)}
+.notif-text{font-size:13px;color:var(--ths-black);line-height:1.5}
+.notif-text span{font-size:12px;color:var(--ths-steel);display:block;margin-top:2px}
+.task-section{margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--ths-border)}
+.logout-row{text-align:right;margin-top:.75rem}
+.logout-btn{background:none;border:0.5px solid var(--ths-border);border-radius:7px;padding:6px 12px;font-size:12px;color:var(--ths-mid);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.logout-btn:hover{background:var(--ths-light)}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--ths-black);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast i{color:var(--ths-orange);font-size:16px}
+.divider{height:0.5px;background:var(--ths-border);margin:.875rem 0}
+.demo-note{background:#FEF3C7;border:0.5px solid #FCD34D;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:13px;color:#78350F;display:flex;align-items:flex-start;gap:8px}
+.demo-note i{font-size:16px;flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <img class="brand-logo" src="https://www.truckhydraulicsolutions.com.au/files/logoBlackText.png" alt="Truck Hydraulic Solutions"
+        onerror="this.style.display='none';document.getElementById('brand-fallback').style.display='flex'">
+      <div id="brand-fallback" style="display:none;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;background:var(--ths-orange);border-radius:6px;display:flex;align-items:center;justify-content:center"><i class="ti ti-trending-up" style="color:#fff;font-size:17px"></i></div>
+        <span style="color:#fff;font-size:14px;font-weight:500">Truck Hydraulic Solutions</span>
+      </div>
+      <div class="brand-divider"></div>
+      <div class="brand-sub">Continuous Improvement<strong>NSW · QLD · VIC</strong></div>
+    </div>
+    <div class="site-pills"><span class="site-pill">NSW</span><span class="site-pill">QLD</span><span class="site-pill">VIC</span></div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="demo-note">
+    <i class="ti ti-info-circle"></i>
+    <span><strong>Preview version</strong> — submissions are saved in your browser only. This file is for feedback and review purposes.</span>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showSection('submit')" id="tab-submit"><i class="ti ti-plus-circle"></i> Submit idea or issue</button>
+    <button class="nav-btn" onclick="showSection('board')" id="tab-board"><i class="ti ti-layout-list"></i> View submissions</button>
+    <button class="nav-btn" onclick="showSection('admin')" id="tab-admin"><i class="ti ti-shield-check"></i> Manager / Director <span class="nav-badge" id="overdue-badge" style="display:none">!</span></button>
+  </nav>
+
+  <!-- SUBMIT -->
+  <div id="section-submit" class="section active">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-bulb"></i> Share an idea or raise an issue</div>
+      <div class="row2">
+        <div>
+          <label for="site">Your site</label>
+          <select id="site"><option value="">Select site…</option><option value="NSW">NSW</option><option value="QLD">QLD</option><option value="VIC">VIC</option></select>
+        </div>
+        <div>
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="">Select category…</option>
+            <option value="Safety">Safety</option>
+            <option value="Workshop / Warehouse process">Workshop / Warehouse process</option>
+            <option value="Equipment">Equipment &amp; tools</option>
+            <option value="Stock & Parts">Stock &amp; parts</option>
+            <option value="Customer Service">Customer service</option>
+            <option value="People & Culture">People &amp; culture</option>
+            <option value="Communication">Communication</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <label for="sub-name">Your name <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11px;color:var(--ths-steel)">(leave blank to submit anonymously)</span></label>
+      <input type="text" id="sub-name" placeholder="e.g. Alex Smith">
+      <label for="issue-title">Summary</label>
+      <input type="text" id="issue-title" placeholder="Short title for your idea or issue…">
+      <label for="issue-desc">Describe the issue or idea</label>
+      <textarea id="issue-desc" placeholder="What's happening? Where? How often? What impact does it have on the team or customers?"></textarea>
+      <label for="solution-desc">Proposed solution <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11px;color:var(--ths-steel)">(optional — but encouraged!)</span></label>
+      <textarea id="solution-desc" placeholder="If you have an idea for how to fix or improve this, share it here…" style="min-height:70px"></textarea>
+      <label for="priority">Priority</label>
+      <select id="priority">
+        <option value="Low">Low — something to improve over time</option>
+        <option value="Medium" selected>Medium — worth addressing soon</option>
+        <option value="High">High — affecting our work now</option>
+        <option value="Urgent">Urgent — needs immediate attention</option>
+      </select>
+      <label>Attachments <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11px;color:var(--ths-steel)">(optional — photos, documents, up to 5 files)</span></label>
+      <div class="upload-zone" id="upload-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+        <input type="file" id="file-input" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" onchange="handleFiles(this.files)">
+        <i class="ti ti-cloud-upload"></i>
+        <p>Drag &amp; drop files here, or <strong style="color:var(--ths-orange)">click to browse</strong></p>
+        <span>Images, PDFs, Word &amp; Excel documents &middot; Max 5 files</span>
+      </div>
+      <div class="attachments-preview" id="attachments-preview"></div>
+      <div class="anon-toggle">
+        <label class="toggle-wrap" for="anon-check"><input type="checkbox" id="anon-check"><div class="slider-track"></div><div class="slider-thumb"></div></label>
+        <div class="anon-label">Submit anonymously<span>Your name won't be visible to anyone reviewing this submission</span></div>
+      </div>
+      <button class="submit-btn" onclick="submitIdea()"><i class="ti ti-send"></i> Submit</button>
+    </div>
+  </div>
+
+  <!-- BOARD -->
+  <div id="section-board" class="section">
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="filters" id="board-filters">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('NSW',this)">NSW</button>
+      <button class="filter-btn" onclick="setFilter('QLD',this)">QLD</button>
+      <button class="filter-btn" onclick="setFilter('VIC',this)">VIC</button>
+      <button class="filter-btn" onclick="setFilter('pending',this)">Pending</button>
+      <button class="filter-btn" onclick="setFilter('approved',this)">Approved</button>
+      <button class="filter-btn" onclick="setFilter('actioned',this)">Actioned</button>
+    </div>
+    <div id="board-list"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="section-admin" class="section">
+    <div id="admin-lock-screen">
+      <div class="card" style="max-width:420px;margin:0 auto">
+        <div class="admin-lock">
+          <div class="lock-icon-wrap"><i class="ti ti-lock"></i></div>
+          <h3>Manager &amp; Director access</h3>
+          <p>Enter your admin PIN to review submissions, approve actions, escalate to directors, and assign tasks.</p>
+          <div class="pin-row">
+            <input type="password" id="pin-input" placeholder="PIN" maxlength="6" onkeydown="if(event.key==='Enter')checkPin()">
+            <button onclick="checkPin()">Unlock</button>
+          </div>
+          <p class="pin-hint">Default PIN: 1234</p>
+        </div>
+      </div>
+    </div>
+    <div id="admin-content" style="display:none">
+      <div id="overdue-alert"></div>
+      <div class="stats-grid" id="admin-stats"></div>
+      <div class="notification-info">
+        <div class="notif-title"><i class="ti ti-bell"></i> How managers &amp; directors are notified</div>
+        <div class="notif-row"><div class="notif-icon"><i class="ti ti-mail"></i></div><div class="notif-text">Email alerts to site managers<span>Ron — NSW, Jake — QLD, Mat — VIC notified on each new submission from their site.</span></div></div>
+        <div class="notif-row"><div class="notif-icon"><i class="ti ti-clock"></i></div><div class="notif-text">Timeline due date reminders<span>Use the "Copy alert for Teams" button on any overdue submission to paste a ready-made reminder into your Teams channel — until automatic notifications are enabled in the full M365 build.</span></div></div>
+        <div class="notif-row"><div class="notif-icon"><i class="ti ti-arrow-up-right"></i></div><div class="notif-text">Director escalation<span>Escalated items flag to directors immediately.</span></div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="filters" id="admin-filters">
+        <button class="filter-btn active" onclick="setAdminFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="setAdminFilter('pending',this)">Needs review</button>
+        <button class="filter-btn red-filter" onclick="setAdminFilter('overdue',this)">Overdue</button>
+        <button class="filter-btn" onclick="setAdminFilter('review',this)">Escalated</button>
+        <button class="filter-btn" onclick="setAdminFilter('approved',this)">Approved</button>
+        <button class="filter-btn" onclick="setAdminFilter('actioned',this)">Actioned</button>
+        <button class="filter-btn" onclick="setAdminFilter('declined',this)">Declined</button>
+      </div>
+      <div id="admin-list"></div>
+      <div class="logout-row"><button class="logout-btn" onclick="adminLogout()"><i class="ti ti-lock"></i> Lock admin panel</button></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-bg" class="modal-bg" style="display:none" onclick="closeModalBg(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+<div id="lightbox" class="lightbox" style="display:none" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()"><i class="ti ti-x"></i></button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+<div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toast-msg">Done!</span></div>
+
+<script>
+const ADMIN_PIN='1234';
+const STORAGE_KEY='ths-cip-v4';
+const TIMELINE_OPTIONS=[
+  {label:'No timeline set',days:null},
+  {label:'1 week',days:7},
+  {label:'2 weeks',days:14},
+  {label:'1 month',days:30},
+  {label:'3 months',days:90},
+];
+let submissions=[];
+let boardFilter='all',adminFilter='all',adminUnlocked=false,pendingFiles=[];
+const MAX_FILES=5;
+const PRIORITY_COLOR={Urgent:'#A32D2D',High:'#B8421F',Medium:'#888',Low:'#aaa'};
+
+function load(){
+  try{const s=localStorage.getItem(STORAGE_KEY);if(s)submissions=JSON.parse(s);}catch(e){submissions=[];}
+  renderBoard();renderStats();updateOverdueBadge();
+}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(submissions));}catch(e){}}
+
+function showSection(s){
+  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('section-'+s).classList.add('active');
+  document.getElementById('tab-'+s).classList.add('active');
+  if(s==='board'){renderBoard();renderStats();}
+  if(s==='admin'&&adminUnlocked){renderAdminList();renderAdminStats();renderOverdueAlert();}
+}
+
+function dueDate(sub){
+  if(!sub.timelineDays||!sub.submittedAt)return null;
+  const d=new Date(sub.submittedAt);d.setDate(d.getDate()+sub.timelineDays);return d;
+}
+function dueStatus(sub){
+  const due=dueDate(sub);if(!due)return 'none';
+  const diff=(due-new Date())/(1000*60*60*24);
+  if(diff<0)return 'overdue';if(diff<3)return 'due-soon';return 'ok';
+}
+function dueBadgeHtml(sub){
+  const due=dueDate(sub);if(!due)return '';
+  const status=dueStatus(sub);
+  const dateStr=due.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+  if(status==='overdue'){
+    const days=Math.abs(Math.round((due-new Date())/(1000*60*60*24)));
+    return `<span class="badge badge-overdue"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Overdue by ${days}d</span>`;
+  }
+  if(status==='due-soon')return `<span class="badge badge-due-soon"><i class="ti ti-clock" style="font-size:11px"></i> Due ${dateStr}</span>`;
+  return `<span class="badge badge-on-track"><i class="ti ti-clock" style="font-size:11px"></i> Due ${dateStr}</span>`;
+}
+function updateOverdueBadge(){
+  const count=submissions.filter(s=>['pending','review','approved'].includes(s.status)&&dueStatus(s)==='overdue').length;
+  const badge=document.getElementById('overdue-badge');
+  if(count>0){badge.textContent=count;badge.style.display='inline-block';}else{badge.style.display='none';}
+}
+function renderOverdueAlert(){
+  const overdue=submissions.filter(s=>['pending','review','approved'].includes(s.status)&&dueStatus(s)==='overdue');
+  const el=document.getElementById('overdue-alert');
+  if(!overdue.length){el.innerHTML='';return;}
+  const msg='THS CIP — '+overdue.length+' submission'+(overdue.length>1?'s':'')+' overdue for review:\n'+overdue.map(s=>'• ['+s.site+'] '+s.title+' — overdue').join('\n')+'\nPlease log in to the Continuous Improvement Platform to action these.';
+  el.innerHTML=`<div class="alert-banner"><i class="ti ti-alert-triangle"></i><div class="alert-banner-content">
+    <div class="alert-banner-title">${overdue.length} submission${overdue.length>1?'s':''} overdue for review</div>
+    <div class="alert-banner-text">${overdue.map(s=>`<strong>[${s.site}]</strong> ${esc(s.title)}`).join(' &nbsp;·&nbsp; ')}</div>
+    <button class="alert-banner-copy" onclick="copyText(${JSON.stringify(msg)})"><i class="ti ti-copy"></i> Copy alert for Teams / email</button>
+  </div></div>`;
+}
+function copyText(msg){navigator.clipboard.writeText(msg).then(()=>showToast('Alert copied — paste into Teams or email'));}
+function copySubmissionAlert(id){
+  const s=submissions.find(x=>x.id===id);if(!s)return;
+  const due=dueDate(s);
+  const dateStr=due?due.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):'no due date set';
+  const msg='THS CIP Alert — Action required\n\nSubmission: '+s.title+'\nSite: '+s.site+'\nCategory: '+(s.category||'—')+'\nPriority: '+s.priority+'\nDue: '+dateStr+'\nStatus: '+s.status+'\n\nPlease log in to the Continuous Improvement Platform to review and action this submission.';
+  navigator.clipboard.writeText(msg).then(()=>showToast('Alert copied — paste into Teams or email'));
+}
+
+function handleDragOver(e){e.preventDefault();document.getElementById('upload-zone').classList.add('dragover');}
+function handleDragLeave(){document.getElementById('upload-zone').classList.remove('dragover');}
+function handleDrop(e){e.preventDefault();document.getElementById('upload-zone').classList.remove('dragover');handleFiles(e.dataTransfer.files);}
+function handleFiles(fileList){
+  const remaining=MAX_FILES-pendingFiles.length;
+  if(remaining<=0){showToast('Maximum 5 files per submission');return;}
+  Array.from(fileList).slice(0,remaining).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{pendingFiles.push({name:file.name,type:file.type,dataUrl:e.target.result});renderFilePreviews();};
+    reader.readAsDataURL(file);
+  });
+  if(fileList.length>remaining)showToast('Only '+remaining+' more file'+(remaining===1?'':'s')+' can be added');
+}
+function removeFile(idx){pendingFiles.splice(idx,1);renderFilePreviews();document.getElementById('file-input').value='';}
+function renderFilePreviews(){
+  const el=document.getElementById('attachments-preview');
+  if(!pendingFiles.length){el.innerHTML='';return;}
+  el.innerHTML=pendingFiles.map((f,i)=>`<div class="attachment-thumb">
+    ${f.type.startsWith('image/')?`<img src="${f.dataUrl}" alt="${esc(f.name)}">`:`<div class="file-icon">${fileIcon(f.name)}<span>${esc(f.name)}</span></div>`}
+    <button class="remove-btn" onclick="removeFile(${i})"><i class="ti ti-x"></i></button>
+  </div>`).join('');
+  const zone=document.getElementById('upload-zone');
+  zone.style.opacity=pendingFiles.length>=MAX_FILES?'.5':'1';
+  zone.style.pointerEvents=pendingFiles.length>=MAX_FILES?'none':'';
+}
+function fileIcon(name){
+  const ext=(name.split('.').pop()||'').toLowerCase();
+  const map={pdf:'ti-file-type-pdf',doc:'ti-file-type-doc',docx:'ti-file-type-doc',xls:'ti-file-type-xls',xlsx:'ti-file-type-xls',txt:'ti-file-description'};
+  return `<i class="ti ${map[ext]||'ti-file'}" style="font-size:22px;color:var(--ths-orange)"></i>`;
+}
+
+function submitIdea(){
+  const site=document.getElementById('site').value;
+  const category=document.getElementById('category').value;
+  const name=document.getElementById('sub-name').value.trim();
+  const title=document.getElementById('issue-title').value.trim();
+  const desc=document.getElementById('issue-desc').value.trim();
+  const solution=document.getElementById('solution-desc').value.trim();
+  const priority=document.getElementById('priority').value;
+  const anon=document.getElementById('anon-check').checked;
+  if(!site){showToast('Please select your site');return;}
+  if(!title){showToast('Please add a summary');return;}
+  if(!desc){showToast('Please describe the issue or idea');return;}
+  submissions.unshift({id:Date.now(),site,category,title,desc,solution,priority,
+    submitter:anon?'Anonymous':(name||'Anonymous'),isAnon:anon,
+    status:'pending',submittedAt:new Date().toISOString(),task:'',
+    attachments:[...pendingFiles],timelineDays:null});
+  save();
+  ['sub-name','issue-title','issue-desc','solution-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('site').value='';document.getElementById('category').value='';
+  document.getElementById('priority').value='Medium';document.getElementById('anon-check').checked=false;
+  pendingFiles=[];renderFilePreviews();document.getElementById('file-input').value='';
+  document.getElementById('upload-zone').style.opacity='1';document.getElementById('upload-zone').style.pointerEvents='';
+  updateOverdueBadge();showToast('Submitted — thank you for your input!');
+}
+
+function siteBadge(site){return `<span class="badge ${{NSW:'badge-nsw',QLD:'badge-qld',VIC:'badge-vic'}[site]||''}">${site||'—'}</span>`;}
+function statusBadge(status){
+  const map={pending:'badge-pending',review:'badge-review',approved:'badge-approved',actioned:'badge-actioned',declined:'badge-declined'};
+  const label={pending:'Pending review',review:'Escalated to director',approved:'Approved',actioned:'Actioned',declined:'Declined'};
+  return `<span class="badge ${map[status]||''}">${label[status]||status}</span>`;
+}
+function priorityDot(p){return `<span class="priority-dot" style="background:${PRIORITY_COLOR[p]||'#aaa'}" title="${p}"></span>`;}
+function timeAgo(iso){
+  const d=(Date.now()-new Date(iso))/1000;
+  if(d<60)return 'just now';if(d<3600)return Math.floor(d/60)+'m ago';
+  if(d<86400)return Math.floor(d/3600)+'h ago';return Math.floor(d/86400)+'d ago';
+}
+function filtered(list,f){
+  if(f==='all')return list;
+  if(['NSW','QLD','VIC'].includes(f))return list.filter(s=>s.site===f);
+  if(f==='overdue')return list.filter(s=>['pending','review','approved'].includes(s.status)&&dueStatus(s)==='overdue');
+  return list.filter(s=>s.status===f);
+}
+function attachmentHint(s){
+  if(!s.attachments||!s.attachments.length)return '';
+  const imgs=s.attachments.filter(a=>a.type.startsWith('image/')).length;
+  const docs=s.attachments.length-imgs;
+  const parts=[];
+  if(imgs)parts.push(imgs+' photo'+(imgs>1?'s':''));
+  if(docs)parts.push(docs+' file'+(docs>1?'s':''));
+  return `<div class="has-solution" style="color:var(--ths-steel)"><i class="ti ti-paperclip"></i> ${parts.join(', ')} attached</div>`;
+}
+function renderAttachments(attachments){
+  if(!attachments||!attachments.length)return '';
+  return `<div class="detail-block"><div class="detail-label">Attachments (${attachments.length})</div>
+    <div class="modal-attachments">${attachments.map(a=>`
+      <div class="modal-thumb" onclick="${a.type.startsWith('image/')?`openLightbox('${a.dataUrl}')`:''}" title="${esc(a.name)}">
+        ${a.type.startsWith('image/')?`<img src="${a.dataUrl}" alt="${esc(a.name)}">`:`<div class="file-icon">${fileIcon(a.name)}<span>${esc(a.name)}</span></div>`}
+      </div>`).join('')}
+    </div></div>`;
+}
+function cardClass(s){const ds=dueStatus(s);return ds==='overdue'?'submission-card overdue':ds==='due-soon'?'submission-card due-soon':'submission-card';}
+
+function renderBoard(){
+  const list=filtered(submissions,boardFilter);
+  const el=document.getElementById('board-list');
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-inbox"></i><p>No submissions yet — be the first to share an idea!</p></div>';return;}
+  el.innerHTML=list.map(s=>`<div class="${cardClass(s)}" onclick="openDetail(${s.id},false)">
+    <div class="sub-header"><div style="flex:1;min-width:0">
+      <div class="sub-title">${esc(s.title)}</div>
+      <div class="sub-meta">${siteBadge(s.site)}${s.category?`<span class="badge badge-cat">${esc(s.category)}</span>`:''}
+        ${priorityDot(s.priority)}<span>${s.priority}</span><span>· ${timeAgo(s.submittedAt)}</span>${dueBadgeHtml(s)}
+      </div>
+    </div><div style="flex-shrink:0">${statusBadge(s.status)}</div></div>
+    <div class="sub-preview">${esc(s.desc).substring(0,130)}${s.desc.length>130?'…':''}</div>
+    ${s.solution?'<div class="has-solution"><i class="ti ti-bulb"></i> Proposed solution included</div>':''}
+    ${attachmentHint(s)}
+  </div>`).join('');
+}
+function renderStats(){
+  const t=submissions.length,p=submissions.filter(s=>s.status==='pending').length,
+    a=submissions.filter(s=>s.status==='approved'||s.status==='actioned').length,
+    ov=submissions.filter(s=>['pending','review','approved'].includes(s.status)&&dueStatus(s)==='overdue').length;
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${t}</div><div class="stat-label">Total</div></div>
+    <div class="stat-card"><div class="stat-num stat-accent">${p}</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card"><div class="stat-num">${a}</div><div class="stat-label">Approved / actioned</div></div>
+    <div class="stat-card"><div class="stat-num ${ov?'stat-red':''}">${ov}</div><div class="stat-label">Overdue</div></div>`;
+}
+function renderAdminStats(){
+  const t=submissions.length,p=submissions.filter(s=>s.status==='pending').length,
+    e=submissions.filter(s=>s.status==='review').length,
+    ov=submissions.filter(s=>['pending','review','approved'].includes(s.status)&&dueStatus(s)==='overdue').length,
+    act=submissions.filter(s=>s.status==='actioned').length;
+  document.getElementById('admin-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${t}</div><div class="stat-label">Total</div></div>
+    <div class="stat-card"><div class="stat-num stat-accent">${p}</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#1e3a8a">${e}</div><div class="stat-label">Escalated</div></div>
+    <div class="stat-card"><div class="stat-num ${ov?'stat-red':''}">${ov}</div><div class="stat-label">Overdue</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#064E3B">${act}</div><div class="stat-label">Actioned</div></div>`;
+}
+function renderAdminList(){
+  const list=filtered(submissions,adminFilter);
+  const el=document.getElementById('admin-list');
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-inbox"></i><p>Nothing here</p></div>';return;}
+  el.innerHTML=list.map(s=>`<div class="${cardClass(s)}" onclick="openDetail(${s.id},true)">
+    <div class="sub-header"><div style="flex:1;min-width:0">
+      <div class="sub-title">${esc(s.title)}</div>
+      <div class="sub-meta">${siteBadge(s.site)}${s.category?`<span class="badge badge-cat">${esc(s.category)}</span>`:''}
+        ${priorityDot(s.priority)}<span>${s.priority}</span>
+        · <span><i class="ti ti-user" style="font-size:12px;vertical-align:-1px"></i> ${esc(s.submitter)}</span>
+        <span>· ${timeAgo(s.submittedAt)}</span>${dueBadgeHtml(s)}
+      </div>
+    </div><div style="flex-shrink:0">${statusBadge(s.status)}</div></div>
+    <div class="sub-preview">${esc(s.desc).substring(0,110)}${s.desc.length>110?'…':''}</div>
+    ${s.solution?'<div class="has-solution"><i class="ti ti-bulb"></i> Solution proposed</div>':''}
+    ${attachmentHint(s)}
+    ${s.task?`<div class="has-solution" style="color:#1e3a8a"><i class="ti ti-clipboard-check"></i> Task: ${esc(s.task)}</div>`:''}
+  </div>`).join('');
+}
+
+function openDetail(id,isAdmin){
+  const s=submissions.find(x=>x.id===id);if(!s)return;
+  const due=dueDate(s);
+  const dueDateStr=due?due.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'}):'No timeline set';
+  const ds=dueStatus(s);
+  let timelineHtml='';
+  if(isAdmin){
+    const opts=TIMELINE_OPTIONS.map(o=>`<option value="${o.days||''}" ${s.timelineDays===o.days?'selected':''}>${o.label}</option>`).join('');
+    timelineHtml=`<div class="timeline-section">
+      <div class="timeline-label"><i class="ti ti-calendar-due"></i> Review timeline</div>
+      <div class="timeline-row">
+        <select id="timeline-select-${id}" onchange="saveTimeline(${id})">${opts}</select>
+        ${ds==='overdue'?`<span class="due-badge due-overdue"><i class="ti ti-alert-triangle"></i> Overdue</span>`:
+          ds==='due-soon'?`<span class="due-badge due-soon"><i class="ti ti-clock"></i> Due soon</span>`:
+          due?`<span class="due-badge due-ok"><i class="ti ti-clock"></i> ${dueDateStr}</span>`:
+          `<span class="due-badge due-none">No due date</span>`}
+      </div>
+    </div>`;
+  } else if(due){
+    timelineHtml=`<div class="detail-block"><div class="detail-label">Review timeline</div><div class="detail-text">${dueDateStr}</div></div>`;
+  }
+  let actions='';
+  if(isAdmin){
+    actions=`<div class="detail-block"><div class="detail-label">Actions</div>
+      <div class="action-row">
+        <button class="action-btn orange" onclick="updateStatus(${id},'approved')"><i class="ti ti-check"></i> Approve</button>
+        <button class="action-btn navy" onclick="updateStatus(${id},'review')"><i class="ti ti-arrow-up-right"></i> Escalate</button>
+        <button class="action-btn green" onclick="updateStatus(${id},'actioned')"><i class="ti ti-clipboard-check"></i> Actioned</button>
+        <button class="action-btn red" onclick="updateStatus(${id},'declined')"><i class="ti ti-x"></i> Decline</button>
+      </div>
+      <div class="action-row" style="margin-top:6px">
+        <button class="action-btn" style="flex:none;width:100%" onclick="copySubmissionAlert(${id})"><i class="ti ti-copy"></i> Copy alert for Teams / email</button>
+      </div>
+    </div>
+    <div class="task-section"><div class="detail-label">Assign task / owner</div>
+      <input type="text" id="task-input-${id}" value="${esc(s.task)}" placeholder="e.g. Mat to review workshop layout by end of month" style="margin-top:6px">
+      <button class="action-btn" style="margin-top:8px;width:100%" onclick="saveTask(${id})"><i class="ti ti-device-floppy"></i> Save task</button>
+    </div>`;
+  }
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-header"><div class="modal-title">${esc(s.title)}</div>
+      <button class="close-btn" onclick="closeModal()"><i class="ti ti-x"></i></button></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+      ${siteBadge(s.site)} ${statusBadge(s.status)}
+      ${s.category?`<span class="badge badge-cat">${esc(s.category)}</span>`:''}
+      <span class="badge badge-cat">${priorityDot(s.priority)} &nbsp;${s.priority} priority</span>
+      ${dueBadgeHtml(s)}
+    </div>
+    <div class="detail-block"><div class="detail-label">Submitted by</div><div class="detail-text">${esc(s.submitter)} &nbsp;·&nbsp; ${timeAgo(s.submittedAt)}</div></div>
+    <div class="detail-block"><div class="detail-label">Issue / idea</div><div class="detail-text">${esc(s.desc)}</div></div>
+    ${s.solution?`<div class="solution-block" style="margin-top:1rem"><div class="detail-label">Proposed solution</div><div class="detail-text">${esc(s.solution)}</div></div>`:''}
+    ${renderAttachments(s.attachments)}
+    ${timelineHtml}
+    ${s.task&&!isAdmin?`<div class="detail-block"><div class="detail-label">Assigned task</div><div class="detail-text">${esc(s.task)}</div></div>`:''}
+    ${actions}`;
+  document.getElementById('modal-bg').style.display='flex';
+}
+
+function saveTimeline(id){
+  const s=submissions.find(x=>x.id===id);
+  const val=document.getElementById('timeline-select-'+id).value;
+  if(s){s.timelineDays=val?parseInt(val):null;save();}
+  renderAdminList();renderAdminStats();renderBoard();renderStats();renderOverdueAlert();updateOverdueBadge();
+  showToast(val?'Timeline set':'Timeline removed');
+}
+function updateStatus(id,status){
+  const s=submissions.find(x=>x.id===id);if(s){s.status=status;save();}
+  closeModal();renderAdminList();renderAdminStats();renderBoard();renderStats();renderOverdueAlert();updateOverdueBadge();
+  showToast({approved:'Approved ✓',review:'Escalated to director',actioned:'Marked as actioned',declined:'Declined'}[status]||'Updated');
+}
+function saveTask(id){
+  const s=submissions.find(x=>x.id===id);
+  const val=document.getElementById('task-input-'+id).value.trim();
+  if(s){s.task=val;save();}closeModal();renderAdminList();showToast('Task saved');
+}
+function closeModal(){document.getElementById('modal-bg').style.display='none';}
+function closeModalBg(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
+function setFilter(f,btn){boardFilter=f;document.querySelectorAll('#board-filters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderBoard();}
+function setAdminFilter(f,btn){adminFilter=f;document.querySelectorAll('#admin-filters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAdminList();}
+function checkPin(){
+  if(document.getElementById('pin-input').value===ADMIN_PIN){
+    adminUnlocked=true;
+    document.getElementById('admin-lock-screen').style.display='none';
+    document.getElementById('admin-content').style.display='block';
+    renderAdminList();renderAdminStats();renderOverdueAlert();
+  }else{showToast('Incorrect PIN — try again');document.getElementById('pin-input').value='';}
+}
+function adminLogout(){
+  adminUnlocked=false;
+  document.getElementById('admin-lock-screen').style.display='block';
+  document.getElementById('admin-content').style.display='none';
+  document.getElementById('pin-input').value='';
+}
+function openLightbox(dataUrl){document.getElementById('lightbox-img').src=dataUrl;document.getElementById('lightbox').style.display='flex';}
+function closeLightbox(){document.getElementById('lightbox').style.display='none';}
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2400);}
+function esc(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+load();
+</script>
+</body>
+</html>
